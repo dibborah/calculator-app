@@ -2,6 +2,7 @@ import { Text, View, Switch, StatusBar, StyleSheet, Dimensions } from "react-nat
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/features/store";
 import { toggleTheme } from "@/features/themeSlice";
+import MyKeyboard from "@/components/MyKeyboard";
 
 const { width, height } = Dimensions.get('window');
 export default function Index() {
@@ -24,6 +25,7 @@ export default function Index() {
       </View>
 
       <View style={styles.keyboardContainer}>
+        <MyKeyboard />
       </View>
     </View>
   );
