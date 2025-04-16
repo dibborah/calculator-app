@@ -35,13 +35,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    padding: 10
   },
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.03,
     marginTop: height * 0.02,
   },
   text: {
