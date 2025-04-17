@@ -9,8 +9,9 @@ const MyKeyboard = () => {
   const [result, setResult] = useState<null | number>(null);
   const [viewPanel, setViewPanel] = useState<string>("")
 
+  // Need to replace the toggle with .00
   const handleNumberPress = (num: string) => {
-    setViewPanel((viewPanel + num).replace(/^0+(?=\d)/, ''));
+    setViewPanel((viewPanel + num).replace(/^0+(?=\d)/, '').replace(/^[*\/%](\d+)/, '$1'));
     if (result) {
         setFirstNumber(num);
         setResult(null);
@@ -20,12 +21,15 @@ const MyKeyboard = () => {
   }
 
   const handleOperationPress = (op: string) => {
-    setViewPanel((viewPanel + op).replace(/[-+*/]+/g, op));
+    setViewPanel((viewPanel + op)
+     .replace(/[-+*/%]+/g, op)
+    );
     if (firstNumber) {
         setFirstNumber("");
     }
   }
 
+  // Need to replace the toggle with .00
   const toggleSign = () => {
     if (firstNumber) {
         setFirstNumber((previous) => previous.startsWith("-") ? previous.substring(1) : `${previous}`);
