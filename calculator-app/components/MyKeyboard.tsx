@@ -5,35 +5,20 @@ import Button from './Button'
 const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 const MyKeyboard = () => {
-  const [firstNumber, setFirstNumber] = useState<string>("");
   const [result, setResult] = useState<null | number>(null);
   const [viewPanel, setViewPanel] = useState<string>("")
 
-  // Need to replace the toggle with .00
   const handleNumberPress = (num: string) => {
     setViewPanel((viewPanel + num).replace(/^0+(?=\d)/, '').replace(/^[*\/%](\d+)/, '$1'));
     if (result) {
-        setFirstNumber(num);
         setResult(null);
-    } else {
-        setFirstNumber(firstNumber + num);
     }
   }
 
   const handleOperationPress = (op: string) => {
     setViewPanel((viewPanel + op)
-     .replace(/[-+*/%]+/g, op)
+     .replace(/[-+*/%.]+/g, op)
     );
-    if (firstNumber) {
-        setFirstNumber("");
-    }
-  }
-
-  // Need to replace the toggle with .00
-  const toggleSign = () => {
-    if (firstNumber) {
-        setFirstNumber((previous) => previous.startsWith("-") ? previous.substring(1) : `${previous}`);
-    }    
   }
 
   const deleteLastDigit = () => {
@@ -41,7 +26,6 @@ const MyKeyboard = () => {
   }
 
   const clear = () => {
-    setFirstNumber('');
     setResult(null);
     setViewPanel('');
   }
@@ -75,7 +59,6 @@ const MyKeyboard = () => {
         }
 
         setResult(answer);
-        setFirstNumber(answer?.toString() ?? '');
         setViewPanel('');
     }
   }
@@ -92,7 +75,7 @@ const MyKeyboard = () => {
     <View style={styles.row}>
         <Button title="C" isGray onPress={clear} />
         <Button title="%" isGray onPress={() => handleOperationPress("%")} />
-        <Button title="+/-" isGray onPress={toggleSign} />
+        <Button title="⌫" isGray onPress={deleteLastDigit} />
         <Button title="÷" isBlue onPress={() => handleOperationPress("/")} />
     </View>
 
@@ -118,9 +101,9 @@ const MyKeyboard = () => {
     </View>
     
     <View style={styles.row}>
+        <Button title="00" isGray onPress={() => handleNumberPress("00")} />
         <Button title="0" isGray onPress={() => handleNumberPress("0")} />
         <Button title="." isGray onPress={() => handleOperationPress(".")} />
-        <Button title="⌫" isGray onPress={deleteLastDigit} />
         <Button title="=" isBlue onPress={getResult} />
     </View>
 
