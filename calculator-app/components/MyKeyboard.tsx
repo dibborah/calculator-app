@@ -2,15 +2,12 @@ import { View, Text, StyleSheet } from 'react-native'
 import { useState } from 'react'
 import Button from './Button'
 
+const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
 const MyKeyboard = () => {
   const [firstNumber, setFirstNumber] = useState<string>("");
-  const [secondNumber, setSecondNumber] = useState<string>("");
-  const [operation, setOperation] = useState<string>("");
   const [result, setResult] = useState<null | number>(null);
   const [viewPanel, setViewPanel] = useState<string>("")
-
-  // Bugs
-  // multiple operation cannot be performed just can be seen
 
   const handleNumberPress = (num: string) => {
     setViewPanel((viewPanel + num).replace(/^0+(?=\d)/, ''));
@@ -23,10 +20,8 @@ const MyKeyboard = () => {
   }
 
   const handleOperationPress = (op: string) => {
-    setViewPanel(viewPanel + op);
+    setViewPanel((viewPanel + op).replace(/[-+*/]+/g, op));
     if (firstNumber) {
-        setOperation(op);
-        setSecondNumber(firstNumber);
         setFirstNumber("");
     }
   }
@@ -38,63 +33,45 @@ const MyKeyboard = () => {
   }
 
   const deleteLastDigit = () => {
-    setFirstNumber((previous: string) => previous.slice(0, -1));
+    setViewPanel((previous: string) => previous.slice(0, -1));
   }
 
   const clear = () => {
     setFirstNumber('');
-    setSecondNumber('');
-    setOperation('');
     setResult(null);
     setViewPanel('');
   }
 
-  // const getResult = () => {
-  //   if (firstNumber && secondNumber) {
-  //       const num1 = parseFloat(secondNumber);
-  //       const num2 = parseFloat(firstNumber);
-
-  //       let answer: number | null = null;
-
-  //       switch(operation) { 
-  //           case "+":
-  //               answer = num1 + num2;
-  //               break;
-  //           case "-" :
-  //               answer = num1 - num2;
-  //               break; 
-  //           case "x" :
-  //               answer = num1 * num2;
-  //               break; 
-  //           case "÷" :
-  //               answer = num2 !== 0 ? num1 / num2 : null;
-  //               break; 
-  //           case "%" :
-  //               answer = (num1 / 100) * num2;
-  //               break; 
-  //           default: 
-  //             break;
-  //       }
-
-  //       setResult(answer);
-  //       setFirstNumber(answer?.toString() ?? '');
-  //       setSecondNumber('');
-  //       setOperation('');   
-  //       setViewPanel('');
-  //   }
-  // }
-
-
-  // eval will solve my problem
-  // To make the multi calculation possible
-  // There are some issue with this function
   const getResult = () => {
     if (viewPanel) {
-        let answer = eval(viewPanel);
+        let temp = '';
+        let lastChar = '';
+        let answer = null;
+
+        if (viewPanel.includes('%')){
+          temp = viewPanel.replace('%', '/100*')
+          lastChar = temp.slice(-1);
+
+          if (!numbers.includes(lastChar)) {
+            let k = (temp.slice(0, -1))
+            answer = eval(k);
+          } else {
+            answer = eval(temp);
+          };
+
+        } else {
+          lastChar = viewPanel.slice(-1);
+          if (!numbers.includes(lastChar)) {
+            temp = (viewPanel.slice(0, -1))
+            answer = eval(temp);
+          } else {
+            answer = eval(viewPanel);
+          };
+          
+        }
+
         setResult(answer);
         setFirstNumber(answer?.toString() ?? '');
-        setSecondNumber('');
-        setOperation('');   
         setViewPanel('');
     }
   }
@@ -112,14 +89,14 @@ const MyKeyboard = () => {
         <Button title="C" isGray onPress={clear} />
         <Button title="%" isGray onPress={() => handleOperationPress("%")} />
         <Button title="+/-" isGray onPress={toggleSign} />
-        <Button title="÷" isBlue onPress={() => handleOperationPress("÷")} />
+        <Button title="÷" isBlue onPress={() => handleOperationPress("/")} />
     </View>
 
     <View style={styles.row}>
         <Button title="7" isGray onPress={() => handleNumberPress("7")} />
         <Button title="8" isGray onPress={() => handleNumberPress("8")} />
         <Button title="9" isGray onPress={() => handleNumberPress("9")} />
-        <Button title="x" isBlue onPress={() => handleOperationPress("x")} />
+        <Button title="x" isBlue onPress={() => handleOperationPress("*")} />
     </View>
 
     <View style={styles.row}>
